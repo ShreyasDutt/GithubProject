@@ -20,7 +20,7 @@ A **Pinterest-like** web application built using **Node.js, Express, MongoDB**, 
 ## Installation & Setup
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/ShreyasDutt/GithubProject.git
+   git clone https://github.com/ShreyasDutt/PinterestProject.git
    cd GithubProject
    ```
 2. **Install dependencies:**
