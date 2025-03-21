@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Edit Your Board</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .board-input:focus {
+            box-shadow: 0 0 0 4px rgba(230, 0, 35, 0.1);
+        }
+        .pinterest-btn {
+            transition: transform 0.1s ease;
+        }
+        .pinterest-btn:hover {
+            transform: scale(1.02);
+        }
+        .pinterest-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Desktop Sidebar -->
+<aside class="w-20 bg-white shadow-sm h-screen fixed top-0 left-0 flex flex-col items-center py-5 z-50 hidden md:flex">
+    <nav class="space-y-6 flex flex-col items-center">
+        <div class="text-red-600 text-4xl font-bold mb-10">
+            <i class="fab fa-pinterest"></i>
+        </div>
+        <a href="/home" class="flex items-center justify-center w-12 h-12 rounded-full bg-white text-black hover:bg-gray-100">
+            <i class="fas fa-home text-xl"></i>
+        </a>
+        <a href="/postcreate" title="create a Post" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100">
+            <i class="fa fa-plus text-xl text-gray-800"></i>
+        </a>
+        <a href="/logout" title="logout" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+    </nav>
+</aside>
+
+<!-- Mobile Bottom Navigation -->
+<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around px-2 py-3 md:hidden z-10">
+    <a href="/home" class="flex flex-col items-center">
+        <i class="fas fa-home text-xl text-gray-700"></i>
+        <span class="text-xs mt-1">Home</span>
+    </a>
+    <a href="/postcreate" class="flex flex-col items-center">
+        <i class="fas fa-plus text-xl text-gray-700"></i>
+        <span class="text-xs mt-1">Create</span>
+    </a>
+</div>
+
+<!-- Main Content -->
+<main class="md:pl-20 pb-16 md:pb-0">
+    <!-- Profile Header -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-gray-900">Edit Board</h1>
+            </div>
+            <a href="/profile" class="flex items-center space-x-2">
+                <div class="flex items-center">
+                    <img src="<%= User.dp %>" alt="Profile" class="w-10 h-10 rounded-full">
+                </div>
+                <div class="flex flex-col">
+                    <p class="font-semibold"><%=User.fullname%></p>
+                    <p class="text-xs text-gray-500">@<%=User.username%></p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Edit Board Section -->
+        <form action="/editboard/<%= Board._id%>" method="post" class="bg-white shadow-sm rounded-lg p-6 max-w-2xl
+        mx-auto">
+            <div class="mb-6">
+                <label for="boardName" class="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                <input
+                        type="text"
+                        id="boardName"
+                        name="boardName"
+                        value="<%= Board.title%>"
+                        class="board-input w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                />
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="pinterest-btn bg-red-600 text-white font-semibold px-6 py-3 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-sm">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

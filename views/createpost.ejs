@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Post - Pinterest Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+
+<div class="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
+    <h2 class="text-3xl font-bold text-center mb-5">Create a New Pin</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="relative">
+            <div class="w-full h-96 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+                <img id="preview" class="hidden object-cover w-full h-full" />
+                <span id="placeholderText" class="text-gray-500">Image Preview</span>
+            </div>
+        </div>
+
+        <form action="/post" method="post" id="postForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Image URL</label>
+                <input type="url" id="imageURL" name="url" placeholder="Paste image url" class="w-full p-2 border
+                rounded-lg" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Title</label>
+                <input type="text" id="title" name="title" class="w-full p-2 border rounded-lg" placeholder="Enter
+                title"
+                       required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea id="description" name="desc" class="w-full p-2 border rounded-lg" placeholder="Enter
+                description"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
+                Publish Pin
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Image Preview Update
+    document.getElementById('imageURL').addEventListener('input', function () {
+        const url = this.value;
+        const previewImg = document.getElementById('preview');
+        const placeholderText = document.getElementById('placeholderText');
+
+        if (url) {
+            previewImg.src = url;
+            previewImg.classList.remove('hidden');
+            placeholderText.classList.add('hidden');
+        } else {
+            previewImg.classList.add('hidden');
+            placeholderText.classList.remove('hidden');
+        }
+    });
+
+    document.getElementById('postForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const image = document.getElementById('imageURL').value;
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+
+        const response = await fetch('/post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: image, title, desc: description })
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            window.location.href = data.redirect;
+        } else {
+            alert("Error: " + data.error);
+        }
+    });
+
+</script>
+
+</body>
+</html>

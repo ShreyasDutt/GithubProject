@@ -1,0 +1,125 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pinterest Clone</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <style>
+            /* Pinterest-style masonry layout */
+            .masonry-container {
+                columns: 5 240px;
+                column-gap: 16px;
+                margin: 0 auto;
+                padding: 16px;
+            }
+
+            .masonry-item {
+                break-inside: avoid;
+                margin-bottom: 16px;
+                display: inline-block;
+                width: 100%;
+            }
+
+            @media (max-width: 1280px) {
+                .masonry-container {
+                    columns: 4 240px;
+                }
+            }
+
+            @media (max-width: 1024px) {
+                .masonry-container {
+                    columns: 3 240px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .masonry-container {
+                    columns: 2 240px;
+                }
+            }
+
+            .post-image-container {
+                position: relative;
+                overflow: hidden;
+                border-radius: 16px;
+                background: #f1f1f1;
+                transition: transform 0.2s ease-in-out;
+            }
+
+            .post-image-container:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            }
+        </style>
+    </head>
+    <body class="bg-white">
+
+    <!-- Sidebar - Hidden on mobile devices -->
+    <div class="flex">
+        <aside class="w-20 bg-white shadow-sm h-screen fixed top-0 left-0 flex flex-col items-center py-5 z-50 hidden md:flex">
+            <div class="text-red-600 text-3xl font-bold mb-10">
+                <i class="fab fa-pinterest"></i>
+            </div>
+            <nav class="space-y-6">
+                <a href="/home" class="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white">
+                    <i class="fas fa-home text-xl"></i>
+                </a>
+                <a href="/postcreate" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100">
+                    <i class="fa fa-plus text-xl text-gray-800"></i>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="ml-0 md:ml-20 w-full p-4">
+            <!-- Search Bar -->
+            <div class="fixed top-4 left-4 md:left-24 right-4 md:right-24 z-40">
+                <div class="flex items-center bg-gray-100 rounded-full px-4 py-3 w-full">
+                    <i class="fas fa-search text-gray-500 mr-2"></i>
+                    <input type="text" placeholder="Search" class="w-full bg-transparent outline-none">
+                </div>
+            </div>
+
+            <!-- User Avatar -->
+            <div class="fixed top-4 right-4 z-40">
+                <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                    <a href="/profile">
+                        <img src="<%= User.dp%>" alt="Profile Picture" class="w-12 h-12 sm:w-12 sm:h-12 rounded-full border border-gray-200 shadow-sm">
+                    </a>
+                </div>
+            </div>
+
+            <!-- Masonry Grid -->
+            <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-4 my-24">
+                <% posts.forEach(post => { %>
+                    <div class="mb-4 break-inside-avoid relative">
+                        <a href="posts/<%= post._id %>" class="block">
+                            <img class="w-full rounded-lg"
+                                 src="<%= post.image %>"
+                                 alt="<%= post.title %>">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 rounded-b-lg">
+                                <p class="text-white font-medium text-sm"><%= post.title %></p>
+                            </div>
+                        </a>
+                    </div>
+                <% }) %>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation (Mobile) - Show on small screens, hide on medium and up -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around px-2 py-3 md:hidden z-10">
+        <a href="/home" class="flex flex-col items-center">
+            <i class="fas fa-home text-xl text-gray-700"></i>
+            <span class="text-xs mt-1">Home</span>
+        </a>
+        <a href="/postcreate" class="flex flex-col items-center">
+            <i class="fas fa-plus text-xl text-gray-700"></i>
+            <span class="text-xs mt-1">Create</span>
+        </a>
+    </div>
+
+    </body>
+    </html>

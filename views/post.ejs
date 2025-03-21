@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= Post.title%></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-white">
+<!-- Sidebar - Hidden on mobile devices -->
+<aside class="w-20 bg-white shadow-sm h-screen fixed top-0 left-0 flex flex-col items-center py-5 z-50 hidden md:flex">
+    <div class="text-red-600 text-3xl font-bold mb-10">
+        <i class="fab fa-pinterest"></i>
+    </div>
+    <nav class="space-y-6">
+        <a href="/home" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100">
+            <i class="fas fa-home text-xl text-gray-800"></i>
+        </a>
+        <a href="/postcreate" class="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-100">
+            <i class="fa fa-plus text-xl text-gray-800"></i>
+        </a>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="ml-0 md:ml-20 md:mt-20 mb-20">
+    <!-- Search Bar -->
+    <div class="fixed top-4 left-4 md:left-24 right-4 md:right-24 z-40">
+        <div class="flex items-center bg-gray-100 rounded-full px-4 py-3 w-full">
+            <i class="fas fa-search text-gray-500 mr-2"></i>
+            <input type="text" placeholder="Search" class="w-full bg-transparent outline-none">
+        </div>
+    </div>
+
+    <!-- User Avatar -->
+    <div class="fixed top-4 right-4 z-40">
+        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+            <a href="/profile">
+                <img src="<%=User.dp%>" alt="Profile Picture" class="w-12 h-12 rounded-full border
+border-gray-200 shadow-sm">
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Container for Pin Content -->
+    <div class="max-w-4xl mx-auto p-3 pt-24 md:pt-20 md:p-4 lg:p-6">
+        <!-- Pin Content -->
+        <div class="bg-white rounded-xl md:rounded-2xl border flex flex-col md:flex-row">
+            <!-- Left - Image Section -->
+            <div class="w-full md:w-1/2 bg-white relative rounded-xl md:rounded-2xl">
+                <img src="<%= Post.image%>" alt="<%= Post.title%>" class="w-full h-auto max-h-96 md:max-h-[500px]
+object-contain
+rounded-t-xl
+md:rounded-l-xl md:rounded-tr-none">
+            </div>
+
+            <!-- Right - Content Section -->
+            <div class="w-full md:w-1/2 p-4 md:p-6">
+                <!-- Top Action Buttons -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-4">
+
+                        <form action="/like/<%= Post.id %>" method="POST">
+                            <% if (Post.likes.includes(User._id)) { %>
+                                <button>
+                                    <i class="fa-solid fa-heart text-red-600"></i>
+                                </button>
+                            <% } else { %>
+                                <button>
+                                    <i class="far fa-heart text-xl"></i>
+                                </button>
+                            <% } %>
+                        </form>
+                        <div class="flex items-center justify-center min-w-[24px] font-medium text-gray-700
+                        ml-2"><%=Post.likes.length%></div>
+                        <button class="w-10 h-10 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
+                            <i class="fas fa-arrow-up-from-bracket text-xl"></i>
+                        </button>
+                        <button class="w-10 h-10 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
+                            <i class="fas fa-ellipsis-h text-xl"></i>
+                        </button>
+                    </div>
+
+                    <div class="relative">
+                        <%
+                        let isSaved = User.pins.some(pin => pin._id.toString() === Post._id.toString()) ||
+                                User.Boards.some(board => board.post.some(pin => pin._id.toString() === Post._id.toString()));
+                        %>
+
+                        <button id="saveButton" class="<%= isSaved ? 'bg-black hover:bg-gray-900' : 'bg-red-600 hover:bg-red-700' %> text-white px-4 py-3 rounded-3xl font-semibold flex items-center">
+                            <%= isSaved ? "Saved" : "Save" %>
+                            <i class="fas fa-chevron-down text-sm ml-2"></i>
+                        </button>
+
+                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-md hidden">
+                            <ul class="py-2 text-sm text-gray-700">
+                                <li>
+
+                                    <form action="/savepin/<%= Post._id %>" method="post">
+                                        <% let isPinned = false; %>
+                                        <% User.pins.forEach(pin => { %>
+                                            <% if (pin._id.toString() === Post._id.toString()) { %>
+                                                <% isPinned = true; %>
+                                            <% } %>
+                                        <% }); %>
+                                        <% if (isPinned) { %>
+                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left">Pins (saved)</button>
+                                            <% } else { %>
+                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left">Pins</button>
+                                        <% } %>
+                                    </form>
+                                </li>
+                                <% User.Boards.forEach(board => { %>
+                                    <li>
+                                        <% let isPinned = false; %>
+                                        <% board.post.forEach(pin => { %>
+                                            <% if (pin._id.toString() === Post._id.toString()) { %>
+                                                <% isPinned = true; %>
+                                            <% } %>
+                                        <% }); %>
+                                        <form action="/saveBoard/<%= board._id%>/<%= Post._id%>" method="POST">
+
+                                        <% if (isPinned) { %>
+                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100
+                                        text-left"><%=board.title%>(Saved)</button>
+                                            <% } else { %>
+                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100
+                                        text-left"><%=board.title%></button>                                        <% } %>
+                                        </form>
+
+
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Title and Description -->
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold mb-2"><%= Post.title%></h1>
+                </div>
+
+                <!-- Creator Info -->
+
+
+                <div class="overflow-auto" style="max-height: 130px;">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden mr-3">
+                            <img src="<%= Post.createdBy.dp%>" alt="" class="w-full h-full bg-gray-300">
+                        </div>
+                        <div>
+                            <p class="font-medium"><%= Post.createdBy.username%></p>
+                            <p class="text-sm text-gray-500"><%= Post.createdBy.fullname%></p>
+                        </div>
+                    </div>
+
+
+
+                    <% Comment.forEach(comment => { %>
+                        <div class="flex items-start gap-2 mb-4">
+                            <div class="flex-shrink-0">
+                                <img src="<%= comment.user.dp %>" alt="Profile"
+                                     class="w-8 h-8 rounded-full object-cover">
+                            </div>
+                            <div class="flex-grow">
+                                <div class="flex items-center gap-1">
+                                    <p class="font-bold text-sm"><%= comment.user.username %></p>
+                                    <p class="text-sm text-gray-700"><%= comment.text %></p>
+                                </div>
+                                <div class="flex items-center mt-1">
+                                    <form action="/commentlike/<%= comment._id%>/<%= Post._id%>" method="post" class="flex
+                                    items-center
+                                    ml-2">
+
+                                        <% if (comment.likes.includes(User._id)) { %>
+                                            <button class="text-xs text-gray-500 hover:text-gray-700 mr-1">
+                                                <i class="fa-solid fa-heart text-red-600"></i>
+                                            </button>
+                                        <% } else { %>
+                                                <button class="text-xs text-gray-500 hover:text-gray-700 mr-1">
+                                                    <i class="fa-regular fa-heart mr-1"></i>
+                                                </button>
+                                        <% } %>
+                                        <% if (comment.likes && comment.likes.length > 0) { %>
+                                            <span class="text-xs text-gray-500"><%= comment.likes.length %></span>
+                                        <% } %>
+                                    </form>
+                                    <% if (comment.user._id.toString() === User._id.toString()) { %>
+                                        <button type="submit" form="delete-<%= comment._id %>" class="text-xs ml-2 text-gray-500 hover:text-red-600">
+                                            <span class="text-xs text-gray-500">Delete</span>
+                                        </button>
+                                        <form id="delete-<%= comment._id %>" action="/deletecomment/<%= comment._id %>/<%= Post._id %>" method="post" class="hidden"></form>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="border-t pt-6">
+                    <h2 class="font-semibold mb-4">What do you think?</h2>
+                    <form action="/comment/<%=Post._id%>" method="post" class="flex items-center gap-2">
+                        <div class="flex-grow bg-gray-100 rounded-full px-4 py-3">
+                            <input type="text"
+                                   placeholder="Add a comment"
+                                   class="w-full bg-transparent outline-none text-gray-700"
+                                   name="comment">
+                        </div>
+                        <button type="submit"
+                                class="px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold text-sm transition-colors">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bottom Navigation (Mobile) - Show on small screens, hide on medium and up -->
+<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around px-2 py-3 md:hidden z-10">
+    <a href="/home" class="flex flex-col items-center">
+        <i class="fas fa-home text-xl text-gray-700"></i>
+        <span class="text-xs mt-1">Home</span>
+    </a>
+    <a href="/postcreate" class="flex flex-col items-center">
+        <i class="fas fa-plus text-xl text-gray-700"></i>
+        <span class="text-xs mt-1">Create</span>
+    </a>
+</div>
+</body>
+<script>
+    document.getElementById("saveButton").addEventListener("click", function () {
+        const dropdown = document.getElementById("dropdownMenu");
+        dropdown.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", function (event) {
+        const dropdown = document.getElementById("dropdownMenu");
+        const button = document.getElementById("saveButton");
+        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.add("hidden");
+        }
+    });
+</script>
+</html>
