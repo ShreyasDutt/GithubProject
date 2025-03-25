@@ -8,8 +8,6 @@ A web application inspired by Pinterest, built using MongoDB, Express.js, EJS & 
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
