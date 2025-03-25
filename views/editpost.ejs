@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <title>Edit Board</title>
+    <title>Edit Post</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .board-input:focus {
+        .Post-input:focus {
             box-shadow: 0 0 0 4px rgba(230, 0, 35, 0.1);
             border-color: #E60023;
         }
@@ -53,7 +53,7 @@
 <main class="md:pl-20 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-6">
         <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Edit Board</h1>
+            <h1 class="text-3xl font-bold text-gray-900">Edit Post</h1>
             <a href="/profile" class="flex items-center space-x-2">
                 <img src="<%= User.dp %>" alt="Profile" class="w-10 h-10 rounded-full object-cover">
                 <div>
@@ -63,16 +63,16 @@
             </a>
         </div>
 
-        <form id="editBoardForm" action="/editboard/<%= Board._id%>" method="post" class="space-y-6">
+        <form id="editPostForm" action="/editPost/<%= Post._id%>" method="post" class="space-y-6">
             <div>
-                <label for="boardName" class="block text-sm font-semibold text-gray-700 mb-2">Board Name</label>
+                <label for="PostName" class="block text-sm font-semibold text-gray-700 mb-2">Post Name</label>
                 <input
                         type="text"
-                        id="boardName"
-                        name="boardName"
-                        value="<%= Board.title%>"
+                        id="PostName"
+                        name="PostName"
+                        value="<%= Post.title%>"
                         required
-                        class="board-input w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        class="Post-input w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
             </div>
 
@@ -82,7 +82,7 @@
                         onclick="confirmDelete()"
                         class="px-6 py-3 bg-gray-100 text-gray-800 rounded-full hover:bg-gray-200 transition-colors"
                 >
-                    Delete Board
+                    Delete Post
                 </button>
                 <button
                         type="submit"
@@ -97,8 +97,8 @@
 
 <script>
     function confirmDelete() {
-        if (confirm('Are you sure you want to delete this board? This action cannot be undone.')) {
-            window.location.href = '/deleteboard/<%= Board._id%>';
+        if (confirm('Are you sure you want to delete this Post? This action cannot be undone.')) {
+            window.location.href = '/deletepost/<%= Post._id%>';
         }
     }
 </script>

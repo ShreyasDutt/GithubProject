@@ -37,8 +37,7 @@
     <div class="fixed top-4 right-4 z-40">
         <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
             <a href="/profile">
-                <img src="<%=User.dp%>" alt="Profile Picture" class="w-12 h-12 rounded-full border
-border-gray-200 shadow-sm">
+                <img src="<%=User.dp%>" alt="Profile Picture" class="w-12 h-12 rounded-full border border-gray-200 shadow-sm">
             </a>
         </div>
     </div>
@@ -49,10 +48,7 @@ border-gray-200 shadow-sm">
         <div class="bg-white rounded-xl md:rounded-2xl border flex flex-col md:flex-row">
             <!-- Left - Image Section -->
             <div class="w-full md:w-1/2 bg-white relative rounded-xl md:rounded-2xl">
-                <img src="<%= Post.image%>" alt="<%= Post.title%>" class="w-full h-auto max-h-96 md:max-h-[500px]
-object-contain
-rounded-t-xl
-md:rounded-l-xl md:rounded-tr-none">
+                <img src="<%= Post.image%>" alt="<%= Post.title%>" class="w-full h-auto max-h-96 md:max-h-[500px] object-contain rounded-t-xl md:rounded-l-xl md:rounded-tr-none">
             </div>
 
             <!-- Right - Content Section -->
@@ -60,7 +56,6 @@ md:rounded-l-xl md:rounded-tr-none">
                 <!-- Top Action Buttons -->
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center space-x-4">
-
                         <form action="/like/<%= Post.id %>" method="POST">
                             <% if (Post.likes.includes(User._id)) { %>
                                 <button>
@@ -72,14 +67,43 @@ md:rounded-l-xl md:rounded-tr-none">
                                 </button>
                             <% } %>
                         </form>
-                        <div class="flex items-center justify-center min-w-[24px] font-medium text-gray-700
-                        ml-2"><%=Post.likes.length%></div>
+                        <div class="flex items-center justify-center min-w-[24px] font-medium text-gray-700 ml-2"><%=Post.likes.length%></div>
                         <button class="w-10 h-10 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
                             <i class="fas fa-arrow-up-from-bracket text-xl"></i>
                         </button>
-                        <button class="w-10 h-10 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
-                            <i class="fas fa-ellipsis-h text-xl"></i>
-                        </button>
+
+                        <!-- Three-dot menu with dropdown -->
+                        <div class="relative">
+                            <button id="optionsButton" class="w-10 h-10 hover:bg-gray-100 rounded-full transition flex items-center justify-center">
+                                <i class="fas fa-ellipsis-h text-xl"></i>
+                            </button>
+
+                            <div id="optionsDropdown" class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-md hidden z-50">
+                                <ul class="py-2 text-sm text-gray-700">
+                                    <% if (Post.createdBy._id.toString() === User._id.toString()) { %>
+                                        <li>
+                                            <form action="/deletepost/<%= Post._id %>" method="POST">
+                                                <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left text-red-600">
+                                                    Delete Pin
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="/editpost/<%= Post._id %>" method="GET">
+                                                <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left">
+                                                    Edit Pin
+                                                </button>
+                                            </form>
+                                        </li>
+                                    <% } %>
+                                    <li>
+                                        <button class="w-full px-4 py-2 hover:bg-gray-100 text-left">
+                                            Report Pin
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="relative">
@@ -96,7 +120,6 @@ md:rounded-l-xl md:rounded-tr-none">
                         <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-md hidden">
                             <ul class="py-2 text-sm text-gray-700">
                                 <li>
-
                                     <form action="/savepin/<%= Post._id %>" method="post">
                                         <% let isPinned = false; %>
                                         <% User.pins.forEach(pin => { %>
@@ -106,7 +129,7 @@ md:rounded-l-xl md:rounded-tr-none">
                                         <% }); %>
                                         <% if (isPinned) { %>
                                             <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left">Pins (saved)</button>
-                                            <% } else { %>
+                                        <% } else { %>
                                             <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left">Pins</button>
                                         <% } %>
                                     </form>
@@ -120,16 +143,12 @@ md:rounded-l-xl md:rounded-tr-none">
                                             <% } %>
                                         <% }); %>
                                         <form action="/saveBoard/<%= board._id%>/<%= Post._id%>" method="POST">
-
-                                        <% if (isPinned) { %>
-                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100
-                                        text-left"><%=board.title%>(Saved)</button>
+                                            <% if (isPinned) { %>
+                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left"><%=board.title%> (Saved)</button>
                                             <% } else { %>
-                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100
-                                        text-left"><%=board.title%></button>                                        <% } %>
+                                            <button type="submit" class="w-full px-4 py-2 hover:bg-gray-100 text-left"><%=board.title%></button>
+                                            <% } %>
                                         </form>
-
-
                                     </li>
                                 <% }); %>
                             </ul>
@@ -137,16 +156,12 @@ md:rounded-l-xl md:rounded-tr-none">
                     </div>
                 </div>
 
-
-
                 <!-- Title and Description -->
                 <div class="mb-6">
                     <h1 class="text-3xl font-bold mb-2"><%= Post.title%></h1>
                 </div>
 
                 <!-- Creator Info -->
-
-
                 <div class="overflow-auto" style="max-height: 130px;">
                     <div class="flex items-center mb-6">
                         <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden mr-3">
@@ -158,13 +173,10 @@ md:rounded-l-xl md:rounded-tr-none">
                         </div>
                     </div>
 
-
-
                     <% Comment.forEach(comment => { %>
                         <div class="flex items-start gap-2 mb-4">
                             <div class="flex-shrink-0">
-                                <img src="<%= comment.user.dp %>" alt="Profile"
-                                     class="w-8 h-8 rounded-full object-cover">
+                                <img src="<%= comment.user.dp %>" alt="Profile" class="w-8 h-8 rounded-full object-cover">
                             </div>
                             <div class="flex-grow">
                                 <div class="flex items-center gap-1">
@@ -172,18 +184,15 @@ md:rounded-l-xl md:rounded-tr-none">
                                     <p class="text-sm text-gray-700"><%= comment.text %></p>
                                 </div>
                                 <div class="flex items-center mt-1">
-                                    <form action="/commentlike/<%= comment._id%>/<%= Post._id%>" method="post" class="flex
-                                    items-center
-                                    ml-2">
-
+                                    <form action="/commentlike/<%= comment._id%>/<%= Post._id%>" method="post" class="flex items-center ml-2">
                                         <% if (comment.likes.includes(User._id)) { %>
                                             <button class="text-xs text-gray-500 hover:text-gray-700 mr-1">
                                                 <i class="fa-solid fa-heart text-red-600"></i>
                                             </button>
                                         <% } else { %>
-                                                <button class="text-xs text-gray-500 hover:text-gray-700 mr-1">
-                                                    <i class="fa-regular fa-heart mr-1"></i>
-                                                </button>
+                                            <button class="text-xs text-gray-500 hover:text-gray-700 mr-1">
+                                                <i class="fa-regular fa-heart mr-1"></i>
+                                            </button>
                                         <% } %>
                                         <% if (comment.likes && comment.likes.length > 0) { %>
                                             <span class="text-xs text-gray-500"><%= comment.likes.length %></span>
@@ -206,13 +215,9 @@ md:rounded-l-xl md:rounded-tr-none">
                     <h2 class="font-semibold mb-4">What do you think?</h2>
                     <form action="/comment/<%=Post._id%>" method="post" class="flex items-center gap-2">
                         <div class="flex-grow bg-gray-100 rounded-full px-4 py-3">
-                            <input type="text"
-                                   placeholder="Add a comment"
-                                   class="w-full bg-transparent outline-none text-gray-700"
-                                   name="comment">
+                            <input type="text" placeholder="Add a comment" class="w-full bg-transparent outline-none text-gray-700" name="comment">
                         </div>
-                        <button type="submit"
-                                class="px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold text-sm transition-colors">
+                        <button type="submit" class="px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold text-sm transition-colors">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </form>
@@ -235,16 +240,31 @@ md:rounded-l-xl md:rounded-tr-none">
 </div>
 </body>
 <script>
+    // Save button dropdown
     document.getElementById("saveButton").addEventListener("click", function () {
         const dropdown = document.getElementById("dropdownMenu");
         dropdown.classList.toggle("hidden");
     });
 
+    // Options (three-dot) button dropdown
+    document.getElementById("optionsButton").addEventListener("click", function () {
+        const dropdown = document.getElementById("optionsDropdown");
+        dropdown.classList.toggle("hidden");
+    });
+
+    // Close dropdowns when clicking outside
     document.addEventListener("click", function (event) {
-        const dropdown = document.getElementById("dropdownMenu");
-        const button = document.getElementById("saveButton");
-        if (!button.contains(event.target) && !dropdown.contains(event.target)) {
-            dropdown.classList.add("hidden");
+        const saveDropdown = document.getElementById("dropdownMenu");
+        const saveButton = document.getElementById("saveButton");
+        const optionsDropdown = document.getElementById("optionsDropdown");
+        const optionsButton = document.getElementById("optionsButton");
+
+        if (!saveButton.contains(event.target) && !saveDropdown.contains(event.target)) {
+            saveDropdown.classList.add("hidden");
+        }
+
+        if (!optionsButton.contains(event.target) && !optionsDropdown.contains(event.target)) {
+            optionsDropdown.classList.add("hidden");
         }
     });
 </script>

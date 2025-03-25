@@ -359,4 +359,45 @@ router.get("/editboard/:id", isLoggedIn, async (req, res) => {
 })
 
 
+router.get('/deletepost/:id', isLoggedIn, async (req, res) => {
+    try{
+        await PostModel.findByIdAndDelete(req.params.id);
+        res.redirect(`/`);
+    }
+    catch(err){
+        res.status(401).json({error:err.message});
+    }
+})
+
+router.get('/editpost/:id', isLoggedIn, async (req, res) => {
+try{
+    const FoundPost = await PostModel.findById(req.params.id);
+    const User = await UserModel.findById(req.user.userid);
+    res.render('editpost',{Post:FoundPost,User:User});
+}
+catch(err){
+    res.status(401).json({error:err.message});
+}
+})
+
+router.post("/editpost/:id", isLoggedIn, async (req, res) => {
+    try{
+        await PostModel.findByIdAndUpdate(req.params.id,{title: req.body.PostName});
+        res.redirect(`/posts/${req.params.id}`);
+
+    }catch(err){
+        res.status(401).json({error:err.message});
+    }
+})
+
+router.get("/deleteboard/:id", isLoggedIn, async (req, res) => {
+    try{
+           await BoardModel.findByIdAndDelete(req.params.id);
+           res.redirect('/profile');
+    }
+    catch(err){
+        res.status(401).json({error:err.message});
+    }
+})
+
 export default router;
